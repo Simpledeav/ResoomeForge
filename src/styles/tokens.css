@@ -1,0 +1,57 @@
+/* ============================================================
+   RESUMEFORGE DESIGN TOKENS
+   Vercel-inspired design system — extreme minimalism,
+   high contrast, generous whitespace
+   ============================================================ */
+
+/* --- Brand Colors --- */
+:root {
+  --resume-bg: #ffffff;
+  --resume-fg: #000000;
+  --resume-muted: #fafafa;
+  --resume-muted-fg: #666666;
+  --resume-border: #eaeaea;
+  --resume-border-strong: #000000;
+  --resume-accent: #0070f3;
+  --resume-accent-fg: #ffffff;
+  --resume-success: #0cce6b;
+  --resume-warning: #f5a623;
+  --resume-error: #e5484d;
+
+  /* Shadows */
+  --resume-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --resume-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --resume-shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.08);
+
+  /* Layout */
+  --resume-radius: 6px;
+  --resume-radius-sm: 4px;
+  --resume-radius-lg: 10px;
+  --resume-radius-xl: 12px;
+
+  /* Typography */
+  --resume-font-display: 64px;
+  --resume-font-h1: 48px;
+  --resume-font-h2: 32px;
+  --resume-font-h3: 24px;
+  --resume-font-body-lg: 18px;
+  --resume-font-body: 16px;
+  --resume-font-small: 14px;
+  --resume-font-caption: 12px;
+
+  /* Spacing */
+  --resume-section-py: 96px;
+  --resume-content-max-w: 1280px;
+}
+
+.dark {
+  --resume-bg: #000000;
+  --resume-fg: #ffffff;
+  --resume-muted: #111111;
+  --resume-muted-fg: #888888;
+  --resume-border: #333333;
+  --resume-border-strong: #ffffff;
+  --resume-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --resume-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --resume-shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.8);
+}
