@@ -1,28 +1,35 @@
-import type { Resume } from "@/lib/schema";
-import { formatDateRange } from "@/components/templates/shared/types";
+import type { TemplateProps } from "@/components/templates/shared/types";
+import {
+  SectionBlock,
+  Heading,
+  BulletList,
+  SkillsDisplay,
+  LanguageDisplay,
+  CertificationCard,
+} from "@/components/templates/shared/TemplateBase";
 
-interface SidebarProps {
-  resume: Resume;
-  accentColor?: string;
-}
-
-export function Sidebar({ resume, accentColor = "#0070f3" }: SidebarProps) {
+export function Sidebar({ resume, accentColor = "#0070f3", wrapperStyle }: TemplateProps) {
   const { personalInfo, summary, experience, education, skills, certifications, projects, languages } = resume;
   const fullName = `${personalInfo.firstName} ${personalInfo.lastName}`.trim() || "Your Name";
 
   return (
-    <div className="flex min-h-full font-sans text-[10.5px] leading-relaxed">
+    <div className="flex min-h-full font-sans text-[10.5px] leading-relaxed" style={wrapperStyle}>
       {/* Sidebar with accent color */}
-      <div className="w-[180px] shrink-0 p-5 flex flex-col gap-5" style={{ backgroundColor: accentColor, color: "#fff" }}>
+      <div
+        className="w-[180px] shrink-0 p-5 flex flex-col gap-5"
+        style={{ backgroundColor: accentColor || "#0070f3", color: "#fff" }}
+      >
         <div>
           <h1 className="text-sm font-bold leading-tight">{fullName}</h1>
-          {personalInfo.title && <p className="text-[10px] mt-1 opacity-80">{personalInfo.title}</p>}
+          {personalInfo.title && (
+            <p className="text-[10px] mt-1 opacity-80">{personalInfo.title}</p>
+          )}
         </div>
 
         {/* Contact */}
         <div>
-          <h3 className="text-[8px] font-bold uppercase tracking-[0.1em] mb-2 opacity-70">Contact</h3>
-          <div className="flex flex-col gap-1 text-[10px] opacity-90">
+          <Heading size="sm" color="text-white/70" divider={false}>Contact</Heading>
+          <div className="flex flex-col gap-1 text-[10px] opacity-90 mt-1.5">
             {personalInfo.email && <span>{personalInfo.email}</span>}
             {personalInfo.phone && <span>{personalInfo.phone}</span>}
             {personalInfo.location && <span>{personalInfo.location}</span>}
@@ -34,14 +41,19 @@ export function Sidebar({ resume, accentColor = "#0070f3" }: SidebarProps) {
         {/* Skills */}
         {skills.length > 0 && (
           <div>
-            <h3 className="text-[8px] font-bold uppercase tracking-[0.1em] mb-2 opacity-70">Skills</h3>
-            <div className="flex flex-col gap-2">
+            <Heading size="sm" color="text-white/70" divider={false}>Skills</Heading>
+            <div className="flex flex-col gap-2 mt-1.5">
               {skills.map((s) => (
                 <div key={s.id}>
-                  <div className="text-[10px] font-medium mb-0.5">{s.category}</div>
+                  <div className="text-[9px] font-medium mb-1 opacity-90">{s.category}</div>
                   <div className="flex flex-wrap gap-1">
                     {s.skills.filter(Boolean).map((skill, i) => (
-                      <span key={i} className="rounded-sm bg-white/15 px-1.5 py-0.5 text-[9px]">{skill}</span>
+                      <span
+                        key={i}
+                        className="inline-block rounded-sm bg-white/15 px-1.5 py-[1px] text-[8px]"
+                      >
+                        {skill}
+                      </span>
                     ))}
                   </div>
                 </div>
@@ -53,83 +65,98 @@ export function Sidebar({ resume, accentColor = "#0070f3" }: SidebarProps) {
         {/* Languages */}
         {languages.length > 0 && (
           <div>
-            <h3 className="text-[8px] font-bold uppercase tracking-[0.1em] mb-2 opacity-70">Languages</h3>
-            {languages.map((l) => (
-              <div key={l.id} className="flex justify-between text-[10px] mb-1">
-                <span>{l.name}</span>
-                <span className="opacity-70">{l.proficiency}</span>
-              </div>
-            ))}
+            <Heading size="sm" color="text-white/70" divider={false}>Languages</Heading>
+            <LanguageDisplay items={languages} variant="list" className="mt-1.5" />
           </div>
         )}
       </div>
 
       {/* Main Content */}
       <div className="flex-1 p-5 flex flex-col gap-4">
-        {summary && <p className="text-justify text-[10.5px] leading-relaxed">{summary}</p>}
+        {/* Summary */}
+        {summary && (
+          <p className="text-justify text-[10.5px] leading-relaxed text-foreground/90">{summary}</p>
+        )}
 
+        {/* Experience */}
         {experience.length > 0 && (
-          <div>
-            <h3 className="text-[9px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-2">Experience</h3>
+          <SectionBlock>
+            <Heading size="sm">Experience</Heading>
             <div className="flex flex-col gap-3">
               {experience.map((exp) => (
                 <div key={exp.id}>
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between gap-2">
                     <div>
-                      <span className="font-semibold text-[11px]">{exp.position}</span>
+                      <span className="font-semibold text-[11px] text-foreground">{exp.position}</span>
                       {exp.company && <span className="text-muted-foreground"> at {exp.company}</span>}
                     </div>
-                    <span className="shrink-0 text-[9px] text-muted-foreground">{formatDateRange(exp.startDate, exp.endDate, exp.current)}</span>
+                    <span className="shrink-0 text-[9px] text-muted-foreground">
+                      {exp.startDate.month}/{exp.startDate.year}
+                      {exp.current ? " – Present" : exp.endDate ? ` – ${exp.endDate.month}/${exp.endDate.year}` : ""}
+                    </span>
                   </div>
-                  {exp.bullets.filter(Boolean).length > 0 && (
-                    <ul className="mt-1 list-disc pl-4 text-[10px] leading-relaxed">
-                      {exp.bullets.filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
-                    </ul>
+                  <BulletList items={exp.bullets} className="mt-1 text-[10px]" />
+                </div>
+              ))}
+            </div>
+          </SectionBlock>
+        )}
+
+        {/* Education */}
+        {education.length > 0 && (
+          <SectionBlock>
+            <Heading size="sm">Education</Heading>
+            <div className="flex flex-col gap-2">
+              {education.map((edu) => (
+                <div key={edu.id} className="flex items-start justify-between gap-2">
+                  <div>
+                    <span className="font-medium text-foreground">{edu.school}</span>
+                    <p className="text-[9.5px] text-muted-foreground">
+                      {edu.degree} in {edu.field}
+                    </p>
+                  </div>
+                  <span className="shrink-0 text-[9px] text-muted-foreground">
+                    {edu.startDate.month}/{edu.startDate.year}
+                    {edu.current ? " – Present" : edu.endDate ? ` – ${edu.endDate.month}/${edu.endDate.year}` : ""}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </SectionBlock>
+        )}
+
+        {/* Certifications */}
+        {certifications.length > 0 && (
+          <SectionBlock>
+            <Heading size="sm">Certifications</Heading>
+            <div className="flex flex-col gap-1">
+              {certifications.map((c) => (
+                <CertificationCard key={c.id} name={c.name} issuer={c.issuer} />
+              ))}
+            </div>
+          </SectionBlock>
+        )}
+
+        {/* Projects */}
+        {projects.length > 0 && (
+          <SectionBlock>
+            <Heading size="sm">Projects</Heading>
+            <div className="flex flex-col gap-2">
+              {projects.map((p) => (
+                <div key={p.id} className="mb-1">
+                  <span className="font-medium text-foreground">{p.name}</span>
+                  {p.description && (
+                    <p className="text-[9.5px] text-foreground/85 mt-[1px]">{p.description}</p>
+                  )}
+                  {p.technologies.filter(Boolean).length > 0 && (
+                    <p className="text-[8.5px] text-muted-foreground mt-[1px]">
+                      {p.technologies.filter(Boolean).join("  ·  ")}
+                    </p>
                   )}
                 </div>
               ))}
             </div>
-          </div>
-        )}
-
-        {education.length > 0 && (
-          <div>
-            <h3 className="text-[9px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-2">Education</h3>
-            {education.map((edu) => (
-              <div key={edu.id} className="flex items-start justify-between mb-1">
-                <div>
-                  <span className="font-medium">{edu.school}</span>
-                  <p className="text-muted-foreground">{edu.degree} in {edu.field}</p>
-                </div>
-                <span className="shrink-0 text-[9px] text-muted-foreground">{formatDateRange(edu.startDate, edu.endDate, edu.current)}</span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {certifications.length > 0 && (
-          <div>
-            <h3 className="text-[9px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-2">Certifications</h3>
-            {certifications.map((c) => (
-              <div key={c.id} className="text-[10px] mb-1">
-                <span className="font-medium">{c.name}</span>
-                {c.issuer && <span className="text-muted-foreground"> — {c.issuer}</span>}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {projects.length > 0 && (
-          <div>
-            <h3 className="text-[9px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-2">Projects</h3>
-            {projects.map((p) => (
-              <div key={p.id} className="mb-2">
-                <span className="font-medium">{p.name}</span>
-                {p.description && <p className="text-[10px]">{p.description}</p>}
-                {p.technologies.filter(Boolean).length > 0 && <p className="text-[9px] text-muted-foreground">{p.technologies.filter(Boolean).join(" · ")}</p>}
-              </div>
-            ))}
-          </div>
+          </SectionBlock>
         )}
       </div>
     </div>

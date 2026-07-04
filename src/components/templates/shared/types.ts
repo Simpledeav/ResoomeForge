@@ -6,6 +6,8 @@ export interface TemplateProps {
   font?: string;
   showPhoto?: boolean;
   columns?: 1 | 2;
+  /** Inline styles to apply to the root template element */
+  wrapperStyle?: React.CSSProperties;
 }
 
 export interface TemplateComponentProps {

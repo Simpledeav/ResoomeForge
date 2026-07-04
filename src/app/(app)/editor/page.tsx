@@ -1,86 +1,21 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowLeft, Settings, Eye, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { EditorShell } from "@/components/editor/EditorShell";
 
 export default function EditorPage() {
   return (
-    <div className="flex min-h-[calc(100vh-3.5rem-200px)] flex-col">
-      {/* Editor toolbar */}
-      <div className="flex items-center justify-between border-b border-border px-4 py-2">
-        <div className="flex items-center gap-3">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="size-3" />
-            Back
-          </Link>
-          <span className="text-xs font-medium text-foreground">
-            Untitled Resume
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm">
-            <Settings className="size-3.5" />
-            <span className="hidden sm:inline ml-1">Style</span>
-          </Button>
-          <Button variant="ghost" size="sm">
-            <Eye className="size-3.5" />
-            <span className="hidden sm:inline ml-1">Preview</span>
-          </Button>
-          <Button size="sm">
-            <Download className="size-3.5" />
-            <span className="hidden sm:inline ml-1">Export</span>
-          </Button>
+    <div className="relative">
+      {/* AI Assistant floating badge */}
+      <div className="fixed bottom-4 left-4 z-40 hidden sm:block">
+        <div className="flex items-center gap-1.5 rounded-full border border-border/50 bg-background/80 backdrop-blur-sm px-3 py-1.5 text-[10px] text-muted-foreground shadow-sm">
+          <svg className="size-3 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+          </svg>
+          AI Assistant
+          <span className="text-[8px] uppercase tracking-wider text-accent font-medium">Coming Soon</span>
         </div>
       </div>
-
-      {/* Editor content - placeholder */}
-      <div className="flex flex-1">
-        {/* Sidebar */}
-        <div className="hidden w-72 border-r border-border p-4 md:block">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <span className="caption text-muted-foreground">Sections</span>
-              <div className="mt-2 flex flex-col gap-1">
-                {[
-                  "Personal Info",
-                  "Summary",
-                  "Experience",
-                  "Education",
-                  "Skills",
-                  "Certifications",
-                  "Projects",
-                ].map((s) => (
-                  <div
-                    key={s}
-                    className="flex items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
-                  >
-                    <div className="h-1.5 w-1.5 rounded-full bg-border" />
-                    {s}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main editor area */}
-        <div className="flex flex-1 items-center justify-center bg-muted/30 p-8">
-          <div className="flex flex-col items-center gap-4 text-center">
-            <div className="rounded-xl border-2 border-dashed border-border p-8">
-              <p className="text-sm text-muted-foreground">
-                Your editor will appear here.
-              </p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Add sections and build your resume in the sidebar.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <EditorShell />
     </div>
   );
 }

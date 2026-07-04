@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import type { Resume } from "@/lib/schema";
+import type { TemplateProps } from "./shared/types";
 
 import { Chronos } from "./ats-safe/Chronos";
 import { Executive } from "./ats-safe/Executive";
@@ -21,7 +22,7 @@ interface TemplateDefinition {
   name: string;
   category: "ats-safe" | "modern" | "creative";
   description: string;
-  component: ComponentType<{ resume: Resume }>;
+  component: ComponentType<TemplateProps>;
   preview: string;
 }
 

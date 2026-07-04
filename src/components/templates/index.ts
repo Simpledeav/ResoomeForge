@@ -20,7 +20,26 @@ export { Vibrant } from "./creative/Vibrant";
 export { Element } from "./creative/Element";
 
 // Shared utilities
-export { Section, Divider } from "./shared/Section";
+export { Section, Divider as UIDivider } from "./shared/Section";
+export {
+  Heading,
+  SectionBlock,
+  BulletList,
+  DateRange,
+  ContactRow,
+  ContactList,
+  ProfilePhoto,
+  Divider,
+  SkillTag,
+  SkillsDisplay,
+  ExperienceCard,
+  EducationCard,
+  ProjectCard,
+  CertificationCard,
+  LanguageDisplay,
+  SectionRenderer,
+} from "./shared/TemplateBase";
+export type { AccentConfig } from "./shared/TemplateBase";
 export { formatMonthYear, formatDateRange, getFontFamily } from "./shared/types";
 export type { TemplateProps } from "./shared/types";
 export { SAMPLE_RESUME } from "./shared/sample-data";

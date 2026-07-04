@@ -21,6 +21,7 @@ import {
   getResume as dbGet,
   deleteResume as dbDelete,
   duplicateResume as dbDuplicate,
+  renameResume as dbRename,
 } from "@/lib/db";
 
 // ============================================================
@@ -68,6 +69,7 @@ export interface ResumeActions {
   saveCurrentResume: () => Promise<void>;
   deleteResume: (id: string) => Promise<void>;
   duplicateResume: (id: string) => Promise<void>;
+  renameResume: (id: string, name: string) => Promise<void>;
 
   // Undo/Redo
   undo: () => void;
@@ -205,15 +207,19 @@ export const useResumeStore = create<ResumeStore>()(
     },
 
     loadResume: async (id: string) => {
-      const resume = await dbGet(id);
-      if (resume) {
-        set((state) => {
-          state.past = pushHistory(state.past, state.currentResume);
-          state.future = [];
-          state.currentResume = resume;
-          state.savedResumeId = id;
-          state.isDirty = false;
-        });
+      try {
+        const resume = await dbGet(id);
+        if (resume) {
+          set((state) => {
+            state.past = pushHistory(state.past, state.currentResume);
+            state.future = [];
+            state.currentResume = resume;
+            state.savedResumeId = id;
+            state.isDirty = false;
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load resume:", err);
       }
     },
 
@@ -221,11 +227,18 @@ export const useResumeStore = create<ResumeStore>()(
       set((state) => {
         state.isLoadingList = true;
       });
-      const list = await dbGetAll();
-      set((state) => {
-        state.resumeList = list;
-        state.isLoadingList = false;
-      });
+      try {
+        const list = await dbGetAll();
+        set((state) => {
+          state.resumeList = list;
+          state.isLoadingList = false;
+        });
+      } catch (err) {
+        console.error("Failed to load resume list:", err);
+        set((state) => {
+          state.isLoadingList = false;
+        });
+      }
     },
 
     saveCurrentResume: async () => {
@@ -233,29 +246,64 @@ export const useResumeStore = create<ResumeStore>()(
       set((state) => {
         state.isSaving = true;
       });
-      await dbSave(currentResume);
-      set((state) => {
-        state.isSaving = false;
-        state.isDirty = false;
-        state.savedResumeId = currentResume.meta.id;
-        state.lastSavedAt = Date.now();
-      });
+      try {
+        await dbSave(currentResume);
+        set((state) => {
+          state.isSaving = false;
+          state.isDirty = false;
+          state.savedResumeId = currentResume.meta.id;
+          state.lastSavedAt = Date.now();
+        });
+      } catch (err) {
+        console.error("Failed to save resume:", err);
+        set((state) => {
+          state.isSaving = false;
+        });
+      }
     },
 
     deleteResume: async (id: string) => {
-      await dbDelete(id);
-      set((state) => {
-        state.resumeList = state.resumeList.filter((r) => r.meta.id !== id);
-        if (state.savedResumeId === id) {
-          state.savedResumeId = null;
-        }
-      });
+      try {
+        await dbDelete(id);
+        set((state) => {
+          state.resumeList = state.resumeList.filter((r) => r.meta.id !== id);
+          if (state.savedResumeId === id) {
+            state.savedResumeId = null;
+          }
+        });
+      } catch (err) {
+        console.error("Failed to delete resume:", err);
+      }
     },
 
     duplicateResume: async (id: string) => {
       const { loadResumeList } = get();
-      await dbDuplicate(id, generateId());
-      await loadResumeList();
+      try {
+        await dbDuplicate(id, generateId());
+        await loadResumeList();
+      } catch (err) {
+        console.error("Failed to duplicate resume:", err);
+      }
+    },
+
+    renameResume: async (id: string, name: string) => {
+      try {
+        await dbRename(id, name);
+        set((state) => {
+          const idx = state.resumeList.findIndex((r) => r.meta.id === id);
+          if (idx !== -1) {
+            state.resumeList[idx].meta.name = name;
+            state.resumeList[idx].meta.updatedAt = Date.now();
+          }
+          // Also update currentResume if it's the one being renamed
+          if (state.currentResume.meta.id === id) {
+            state.currentResume.meta.name = name;
+            state.currentResume.meta.updatedAt = Date.now();
+          }
+        });
+      } catch (err) {
+        console.error("Failed to rename resume:", err);
+      }
     },
 
     // ============================================================

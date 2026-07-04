@@ -34,3 +34,14 @@ export type {
   ProficiencyLevel as ProficiencyLevelType,
   MonthYear as MonthYearType,
 } from "./resume";
+
+export {
+  CoverLetterMetaSchema,
+  CoverLetterSchema,
+  createEmptyCoverLetter,
+} from "./cover-letter";
+
+export type {
+  CoverLetterMeta,
+  CoverLetter,
+} from "./cover-letter";
