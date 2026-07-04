@@ -20,7 +20,7 @@ export function EditorShell() {
   const [activeSection, setActiveSection] = useState("personalInfo");
   const [designOpen, setDesignOpen] = useState(false);
   const [previewMode, setPreviewMode] = useState<"split" | "preview" | "ats">("split");
-  const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
+  const [mobileTab, setMobileTab] = useState<"edit" | "preview" | "ats">("edit");
   const [isMobile, setIsMobile] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const isDirty = useResumeStore((s) => s.isDirty);
@@ -151,6 +151,24 @@ export function EditorShell() {
           {mobileTab === "preview" && (
             <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-foreground rounded-full" />
           )}
+        
+        </button>
+        <button
+          onClick={() => setMobileTab("ats")}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium transition-colors relative ${
+            mobileTab === "ats"
+              ? "text-foreground"
+              : "text-muted-foreground"
+          }`}
+        >
+          <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 11l3 3L22 4" />
+            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+          </svg>
+          ATS
+          {mobileTab === "ats" && (
+            <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-foreground rounded-full" />
+          )}
         </button>
       </div>
 
@@ -185,6 +203,17 @@ export function EditorShell() {
       {mobileTab === "preview" && (
         <div className="flex-1 flex overflow-hidden">
           <PreviewPane ref={previewRef} />
+        </div>
+      )}
+
+      {mobileTab === "ats" && (
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex overflow-hidden">
+            <PreviewPane ref={previewRef} />
+            <div className="w-72 shrink-0 border-l border-border bg-background overflow-y-auto p-4">
+              <ATSChecker />
+            </div>
+          </div>
         </div>
       )}
 
